@@ -1,4 +1,6 @@
 import { Card } from "react-bootstrap"
+import { Link } from "react-router-dom"
+import Rating from "./Rating"
 
 interface Props {
   product: {
@@ -6,21 +8,29 @@ interface Props {
     name: string
     image: string
     price: number
+    rating: number
+    numReviews: number
   }
 }
 
 const Product = ({ product }: Props) => {
   return (
     <Card className="p-3 rounded">
-      <a href={`/product/${product._id}`}>
+      <Link to={`/product/${product._id}`}>
         <Card.Img variant="top" src={product.image} />
-      </a>
+      </Link>
       <Card.Body>
-        <a href={`/product/${product._id}`}>
-          <Card.Title>
+        <Link to={`/product/${product._id}`}>
+          <Card.Title className="product-title">
             <strong>{product.name}</strong>
           </Card.Title>
-        </a>
+        </Link>
+        <Card.Text>
+          <Rating
+            value={product.rating}
+            text={`${product.numReviews} reviews`}
+          />
+        </Card.Text>
         <Card.Text as="h3">{product.price}</Card.Text>
       </Card.Body>
     </Card>
