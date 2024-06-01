@@ -1,11 +1,24 @@
 import { Link, useParams } from "react-router-dom"
-import products from "../products"
 import { Row, Col, Image, ListGroup, Button } from "react-bootstrap"
 import Rating from "../components/Rating"
+import axios from "axios"
+import { useState, useEffect } from "react"
+import { ProductType } from "../helpers/types"
 
 const ProductScreen = () => {
   const { id: productId } = useParams()
-  const product = products.find((p) => p._id === productId)
+  const [product, setProduct] = useState<ProductType>()
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      const { data } = await axios.get<ProductType>(
+        `/api/products/${productId}`
+      )
+      setProduct(data)
+    }
+    fetchProduct()
+  }, [productId])
+
   if (!product) return <div>Product Not Found</div>
   return (
     <>
@@ -14,7 +27,7 @@ const ProductScreen = () => {
       </Link>
       <Row>
         <Col md={5}>
-          <Image src={product.image} alt={product?.name} fluid />
+          <Image src={product.image} alt={product.name} fluid />
         </Col>
         <Col md={4}>
           <ListGroup variant="flush">

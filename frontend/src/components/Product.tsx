@@ -1,19 +1,9 @@
 import { Card } from "react-bootstrap"
 import { Link } from "react-router-dom"
 import Rating from "./Rating"
+import { ProductType } from "../helpers/types"
 
-interface Props {
-  product: {
-    _id: string
-    name: string
-    image: string
-    price: number
-    rating: number
-    numReviews: number
-  }
-}
-
-const Product = ({ product }: Props) => {
+const Product = ({ product }: { product: ProductType }) => {
   return (
     <Card className="p-3 rounded">
       <Link to={`/product/${product._id}`}>
@@ -25,7 +15,7 @@ const Product = ({ product }: Props) => {
             <strong>{product.name}</strong>
           </Card.Title>
         </Link>
-        <Card.Text>
+        <Card.Text as="div">
           <Rating
             value={product.rating}
             text={`${product.numReviews} reviews`}
