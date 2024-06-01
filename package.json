@@ -1,0 +1,28 @@
+{
+  "name": "proshop",
+  "version": "1.0.0",
+  "description": "E-commerece application",
+  "main": "server.ts",
+  "scripts": {
+    "clean": "rimraf backend/build",
+    "build": "npm run clean && npx tsc",
+    "start": "node backend/build/src/server.js",
+    "server": "nodemon backend/src/server.ts",
+    "client": "npm start --prefix frontend",
+    "dev": "concurrently \"npm run server \" \"npm run client \""
+  },
+  "keywords": [],
+  "author": "Amr Mamdouh",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.13.0",
+    "concurrently": "^8.2.2",
+    "nodemon": "^3.1.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
