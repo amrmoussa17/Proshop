@@ -1,5 +1,5 @@
 import express from "express"
-import products from "./products"
+import products from "./data/products"
 import dotenv from "dotenv"
 import connectDb from "./config/db"
 
@@ -11,9 +11,10 @@ const app = express()
 app.get("/api/products", (_req, res) => {
   res.json(products)
 })
-app.get("/api/products/:id", (req, res) => {
-  res.json(products.find((p) => p._id === req.params.id))
-})
+
+// app.get("/api/products/:id", (req, res) => {
+//   res.json(products.find((p) => p._id === req.params.id))
+// })
 
 const port = process.env.PORT || 5000
 
