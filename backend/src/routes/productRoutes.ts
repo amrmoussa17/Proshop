@@ -15,7 +15,10 @@ router.get(
   "/:id",
   asyncHandler(async (req, res) => {
     const product = await Product.findById(req.params.id)
-    if (!product) return res.status(404).json({ message: "Product Not Found" })
+    if (!product) {
+      res.status(404)
+      throw new Error("Resource Not Found")
+    }
     res.json(product)
   })
 )
