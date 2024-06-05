@@ -1,12 +1,12 @@
-import { Row, Col } from "react-bootstrap"
+import { Row, Col, Spinner, Alert } from "react-bootstrap"
 import Product from "../components/Product"
-import { useGetProductsQuery } from "../slices/productSlice"
+import { useGetProductsQuery } from "../slices/productsApiSlice"
 
 const HomeScreen = () => {
   const { data: products, error, isLoading } = useGetProductsQuery()
 
   if (isLoading) {
-    return <div>Loading...</div>
+    return <Spinner animation="border" />
   }
 
   if (error) {
@@ -14,10 +14,10 @@ const HomeScreen = () => {
       const errMsg = "error" in error ? error.error : JSON.stringify(error.data)
 
       return (
-        <div>
+        <Alert variant="danger">
           <div>An error has occurred:</div>
           <div>{errMsg}</div>
-        </div>
+        </Alert>
       )
     }
     return <div>{error.message}</div>

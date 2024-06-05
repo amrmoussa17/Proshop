@@ -1,7 +1,15 @@
 import { Link, useParams } from "react-router-dom"
-import { Row, Col, Image, ListGroup, Button } from "react-bootstrap"
+import {
+  Row,
+  Col,
+  Image,
+  ListGroup,
+  Button,
+  Spinner,
+  Alert,
+} from "react-bootstrap"
 import Rating from "../components/Rating"
-import { useGetProductDetailsQuery } from "../slices/productSlice"
+import { useGetProductDetailsQuery } from "../slices/productsApiSlice"
 
 const ProductScreen = () => {
   const { id: productId } = useParams()
@@ -12,7 +20,7 @@ const ProductScreen = () => {
   } = useGetProductDetailsQuery(productId)
 
   if (isLoading) {
-    return <div>Loading...</div>
+    return <Spinner animation="border" />
   }
 
   if (error) {
@@ -20,10 +28,10 @@ const ProductScreen = () => {
       const errMsg = "error" in error ? error.error : JSON.stringify(error.data)
 
       return (
-        <div>
+        <Alert variant="danger">
           <div>An error has occurred:</div>
           <div>{errMsg}</div>
-        </div>
+        </Alert>
       )
     }
     return <div>{error.message}</div>
