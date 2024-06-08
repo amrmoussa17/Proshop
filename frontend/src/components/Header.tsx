@@ -6,11 +6,10 @@ import logo from "../assets/logo.png"
 import { LinkContainer } from "react-router-bootstrap"
 import { Badge } from "react-bootstrap"
 import { useSelector } from "react-redux"
+import { CartType } from "../helpers/types"
 
 const Header = () => {
-  const { cartItems } = useSelector(
-    (state: { cart: { cartItems: any[] } }) => state.cart
-  )
+  const { itemsQty } = useSelector((state: { cart: CartType }) => state.cart)
   return (
     <Navbar expand="lg" bg="dark" variant="dark" collapseOnSelect>
       <Container>
@@ -26,12 +25,9 @@ const Header = () => {
             <LinkContainer to="/cart">
               <Nav.Link>
                 <FaShoppingCart /> Cart
-                {cartItems.length > 0 && (
+                {itemsQty > 0 && (
                   <Badge bg="success" style={{ marginLeft: " 0.5rem" }}>
-                    {cartItems.reduce(
-                      (acc: number, x: { qty: number }) => acc + x.qty,
-                      0
-                    )}
+                    {itemsQty}
                   </Badge>
                 )}
               </Nav.Link>

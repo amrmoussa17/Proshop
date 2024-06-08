@@ -1,26 +1,8 @@
+import { CartType } from "./types"
+
 const addDecimals = (num: number) => (Math.round(num * 100) / 100).toFixed(2)
 
-export const updateCart = (
-  state: {
-    cartItems: any[]
-    itemsPrice: number
-    shippingPrice: number
-    taxPrice: number
-    totalPrice: number
-  },
-  item: { _id: string }
-) => {
-  const existItem = state.cartItems.find(
-    (x: { _id: string }) => x._id === item._id
-  )
-  if (existItem) {
-    state.cartItems = state.cartItems.map((x: { _id: string }) =>
-      x._id === existItem._id ? item : x
-    )
-  } else {
-    state.cartItems = [...state.cartItems, item]
-  }
-
+export const updateCart = (state: CartType) => {
   state.itemsPrice = Number(
     addDecimals(
       state.cartItems.reduce(
@@ -35,6 +17,7 @@ export const updateCart = (
   state.totalPrice = Number(
     addDecimals(state.itemsPrice + state.shippingPrice + state.taxPrice)
   )
+  state.itemsQty = state.cartItems.reduce((acc, item) => acc + item.qty, 0)
 
   localStorage.setItem("cart", JSON.stringify(state))
 }
