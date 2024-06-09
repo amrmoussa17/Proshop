@@ -9,7 +9,7 @@ import {
   Card,
 } from "react-bootstrap"
 import { useDispatch, useSelector } from "react-redux"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { addToCart, removeFromCart } from "../slices/cartSlice"
 import { CartItemType, CartType } from "../helpers/types"
 import { FaTrash } from "react-icons/fa"
@@ -18,11 +18,16 @@ const CartScreen = () => {
   const cart = useSelector((state: { cart: CartType }) => state.cart)
   const { cartItems } = cart
   const dispatch = useDispatch()
+  const navigate = useNavigate()
+
   const addToCartHandler = (product: CartItemType, qty: number) => {
     dispatch(addToCart({ ...product, qty }))
   }
   const removeFromCartHandler = (productId: string) => {
     dispatch(removeFromCart(productId))
+  }
+  const checkoutHandler = () => {
+    navigate("/login?redirect=/shipping")
   }
   return (
     <Row>
@@ -84,6 +89,7 @@ const CartScreen = () => {
                 type="button"
                 className="btn-block"
                 disabled={cartItems.length === 0}
+                onClick={checkoutHandler}
               >
                 Proceed To Checkout
               </Button>
