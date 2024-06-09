@@ -3,7 +3,7 @@ import Product from "../models/productModel"
 
 /*
  @@ desc fetch all products
- @@ Route /api/products
+ @@ Route GET /api/products
  @@ Access public 
  */
 const getProducts = asyncHandler(async (_req, res) => {
@@ -13,7 +13,7 @@ const getProducts = asyncHandler(async (_req, res) => {
 
 /*
  @@ desc fetch a single product
- @@ Route /api/products/:id
+ @@ Route GET /api/products/:id
  @@ Access public 
  */
 const getProduct = asyncHandler(async (req, res) => {
