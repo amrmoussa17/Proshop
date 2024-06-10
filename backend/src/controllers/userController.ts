@@ -1,6 +1,8 @@
+import bcrypt from "bcrypt"
 import asyncHandler from "../middleware/asyncHandler"
 import User from "../models/userModel"
 import jwt from "jsonwebtoken"
+import generateToken from "../utils/generateToken"
 /*
  @@ desc Auth user and get token
  @@ Route POST /api/users/auth
@@ -10,15 +12,7 @@ export const authUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body
   const user = await User.findOne({ email })
   if (user && (await user.matchPassword(password))) {
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET!, {
-      expiresIn: 60 * 60,
-    })
-    res.cookie("jwt", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV !== "development",
-      sameSite: true,
-      maxAge: 60 * 60 * 1000,
-    })
+    generateToken(res, user._id)
     res.json({
       _id: user._id,
       name: user.name,
@@ -45,7 +39,29 @@ export const logoutUser = asyncHandler(async (req, res) => {
  @@ Access public 
  */
 export const registerUser = asyncHandler(async (req, res) => {
-  res.send("register user")
+  const { email, name, password } = req.body
+  const userExists = await User.findOne({ email })
+  if (userExists) {
+    res.status(400)
+    throw new Error("user already exists")
+  }
+  const user = await User.create({
+    email,
+    name,
+    password: bcrypt.hashSync(password, 10),
+  })
+  if (user) {
+    generateToken(res, user._id)
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      isAdmin: user.isAdmin,
+    })
+  } else {
+    res.status(400)
+    throw new Error("Invalid user data")
+  }
 })
 /*
  @@ desc get user profile 
