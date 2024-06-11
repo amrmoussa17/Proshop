@@ -1,7 +1,6 @@
 import bcrypt from "bcrypt"
 import asyncHandler from "../middleware/asyncHandler"
 import User from "../models/userModel"
-import jwt from "jsonwebtoken"
 import generateToken from "../utils/generateToken"
 /*
  @@ desc Auth user and get token
@@ -69,7 +68,18 @@ export const registerUser = asyncHandler(async (req, res) => {
  @@ Access private 
  */
 export const getUserProfile = asyncHandler(async (req, res) => {
-  res.send("get user profile")
+  const user = await User.findById(req.user!._id)
+  if (user) {
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      isAdmin: user.isAdmin,
+    })
+  } else {
+    res.status(404)
+    throw new Error("user not found")
+  }
 })
 /*
  @@ desc update user profile 
@@ -77,7 +87,25 @@ export const getUserProfile = asyncHandler(async (req, res) => {
  @@ Access private 
  */
 export const updateUserProfile = asyncHandler(async (req, res) => {
-  res.send("update user profile")
+  const { name, email, password } = req.body
+  const user = await User.findById(req.user!._id)
+  if (user) {
+    user.name = name || user.name
+    user.email = email || user.email
+    if (password) {
+      user.password = bcrypt.hashSync(password, 10) || user.password
+    }
+    const updatedUser = await user.save()
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      isAdmin: user.isAdmin,
+    })
+  } else {
+    res.status(404)
+    throw new Error("user not found")
+  }
 })
 /*
  @@ desc get all users

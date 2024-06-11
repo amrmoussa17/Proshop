@@ -3,6 +3,7 @@ import mongoose from "mongoose"
 
 interface RequestInfo extends Request {
   user?: {
+    _id: unknown
     name: string
     email: string
     isAdmin: boolean
