@@ -21,3 +21,10 @@ export interface CartType {
   totalPrice: number
   itemsQty: number
 }
+
+export interface UserType {
+  _id: string
+  name: string
+  email: string
+  isAdmin: boolean
+}
