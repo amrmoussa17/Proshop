@@ -2,14 +2,40 @@ import { Badge, NavDropdown, Navbar, Nav, Container } from "react-bootstrap"
 import { FaShoppingCart, FaUser } from "react-icons/fa"
 import { LinkContainer } from "react-router-bootstrap"
 import logo from "../assets/logo.png"
-import { useAppSelector } from "../hooks"
+import { useAppDispatch, useAppSelector } from "../hooks"
+import { useLogoutMutation } from "../slices/usersApiSlice"
+import {
+  isErrorWithMessage,
+  isFetchBaseQueryError,
+} from "../helpers/RTKQueryError"
+import { toast } from "react-toastify"
+import { logout } from "../slices/authSlice"
+import { useNavigate } from "react-router-dom"
 
 const Header = () => {
   const { itemsQty } = useAppSelector((state) => state.cart)
   const { userInfo } = useAppSelector((state) => state.auth)
-  const logoutHandler = () => {
-    console.log("logout")
+
+  const [logoutApiCall] = useLogoutMutation()
+
+  const navigate = useNavigate()
+  const dispatch = useAppDispatch()
+
+  const logoutHandler = async () => {
+    try {
+      await logoutApiCall().unwrap()
+      dispatch(logout())
+      navigate("/login")
+    } catch (err) {
+      if (isFetchBaseQueryError(err)) {
+        const errMsg = "error" in err ? err.error : JSON.stringify(err.data)
+        toast.error(errMsg)
+      } else if (isErrorWithMessage(err)) {
+        toast.error(err.message)
+      }
+    }
   }
+
   return (
     <Navbar expand="lg" bg="dark" variant="dark" collapseOnSelect>
       <Container>
