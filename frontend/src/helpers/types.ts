@@ -13,6 +13,12 @@ export interface ProductType {
 export interface CartItemType extends ProductType {
   qty: number
 }
+export interface ShippingAddress {
+  address: string
+  city: string
+  postalCode: string
+  country: string
+}
 export interface CartType {
   cartItems: CartItemType[]
   itemsPrice: number
@@ -20,6 +26,8 @@ export interface CartType {
   taxPrice: number
   totalPrice: number
   itemsQty: number
+  shippingAddress: ShippingAddress
+  paymentMethod: string
 }
 
 export interface UserType {

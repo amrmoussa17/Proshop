@@ -8,19 +8,19 @@ import {
   Form,
   Card,
 } from "react-bootstrap"
-import { useDispatch, useSelector } from "react-redux"
 import { Link, useNavigate } from "react-router-dom"
 import { addToCart, removeFromCart } from "../slices/cartSlice"
-import { CartItemType, CartType } from "../helpers/types"
+import { ProductType } from "../helpers/types"
 import { FaTrash } from "react-icons/fa"
+import { useAppSelector, useAppDispatch } from "../hooks"
 
 const CartScreen = () => {
-  const cart = useSelector((state: { cart: CartType }) => state.cart)
+  const cart = useAppSelector((state) => state.cart)
   const { cartItems } = cart
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const navigate = useNavigate()
 
-  const addToCartHandler = (product: CartItemType, qty: number) => {
+  const addToCartHandler = (product: ProductType, qty: number) => {
     dispatch(addToCart({ ...product, qty }))
   }
   const removeFromCartHandler = (productId: string) => {
