@@ -1,4 +1,13 @@
 import asyncHandler from "../middleware/asyncHandler"
+import Order from "../models/orderModel"
+
+interface OrderItemType {
+  _id: string
+  name: string
+  qty: number
+  image: string
+  price: number
+}
 
 /*
  @@ desc create order
@@ -6,7 +15,36 @@ import asyncHandler from "../middleware/asyncHandler"
  @@ Access private 
  */
 export const createOrder = asyncHandler(async (req, res) => {
-  res.send("create order")
+  const {
+    orderItems,
+    shippingAddress,
+    paymentMethod,
+    itemsPrice,
+    taxPrice,
+    shippingPrice,
+    totalPrice,
+  } = req.body
+
+  if (orderItems && orderItems.length === 0) {
+    res.status(400)
+    throw new Error("No order Items")
+  } else {
+    const order = new Order({
+      user: req.user!._id,
+      orderItems: orderItems.map((item: OrderItemType) => ({
+        ...item,
+        product: item._id,
+      })),
+      shippingAddress,
+      paymentMethod,
+      itemsPrice,
+      taxPrice,
+      shippingPrice,
+      totalPrice,
+    })
+    const createdOrder = await order.save()
+    res.status(201).json(createdOrder)
+  }
 })
 
 /*
@@ -15,7 +53,8 @@ export const createOrder = asyncHandler(async (req, res) => {
  @@ Access private 
  */
 export const getMyOrders = asyncHandler(async (req, res) => {
-  res.send("get my orders")
+  const orders = await Order.find({ user: req.user!._id })
+  res.json(orders)
 })
 
 /*
@@ -33,7 +72,16 @@ export const getAllOrders = asyncHandler(async (req, res) => {
 @access  Private
 */
 export const getOrderById = asyncHandler(async (req, res) => {
-  res.send("get order by id")
+  const order = await Order.findById(req.params.id).populate(
+    "user",
+    "name email"
+  )
+  if (!order) {
+    res.status(404)
+    throw new Error("order not found")
+  } else {
+    res.status(200).json(order)
+  }
 })
 
 /*
