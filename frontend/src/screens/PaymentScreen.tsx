@@ -36,6 +36,7 @@ const PaymentScreen = () => {
             label={"PayPal or credit card"}
             value="PayPal"
             onChange={(e) => setPaymentMethod(e.target.value)}
+            checked
           />
         </Form.Group>
         <Button type="submit" variant="primary">

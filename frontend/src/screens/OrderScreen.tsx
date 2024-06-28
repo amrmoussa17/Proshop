@@ -1,5 +1,9 @@
 import { Link, useParams } from "react-router-dom"
-import { useGetOrderDetailsQuery } from "../slices/ordersApiSlice"
+import {
+  useGetOrderDetailsQuery,
+  usePayOrderMutation,
+  useGetPaypalClientIdQuery,
+} from "../slices/ordersApiSlice"
 import {
   Row,
   Col,
@@ -8,13 +12,95 @@ import {
   Card,
   Spinner,
   Image,
+  Button,
 } from "react-bootstrap"
 import { CartItemType } from "../helpers/types"
-import { Key } from "react"
+import { Key, useEffect } from "react"
+import { usePayPalScriptReducer, PayPalButtons } from "@paypal/react-paypal-js"
+import { toast } from "react-toastify"
+import {
+  isFetchBaseQueryError,
+  isErrorWithMessage,
+} from "../helpers/RTKQueryError"
 
 const OrderScreen = () => {
   const { id: orderId } = useParams()
-  const { data: order, error, isLoading } = useGetOrderDetailsQuery(orderId)
+  const {
+    data: order,
+    refetch,
+    error,
+    isLoading,
+  } = useGetOrderDetailsQuery(orderId)
+
+  const [payOrder] = usePayOrderMutation()
+
+  const [{ options }, paypalDispatch] = usePayPalScriptReducer()
+
+  const {
+    data: paypal,
+    isLoading: loadingPayPal,
+    error: errorPayPal,
+  } = useGetPaypalClientIdQuery()
+
+  useEffect(() => {
+    if (!errorPayPal && !loadingPayPal && paypal?.clientId) {
+      const loadPaypalScript = async () => {
+        paypalDispatch({
+          type: "resetOptions",
+          value: {
+            "client-id": paypal?.clientId,
+            currency: "USD",
+          },
+        })
+      }
+      if (order && !order.isPaid) {
+        if (!window.paypal) {
+          loadPaypalScript()
+        }
+      }
+    }
+  }, [errorPayPal, loadingPayPal, order, paypal, paypalDispatch])
+
+  function onApprove(_data: any, actions: any) {
+    return actions.order.capture().then(async function (details: any) {
+      try {
+        await payOrder({ orderId, details })
+        refetch()
+        toast.success("Order is paid")
+      } catch (err) {
+        if (isFetchBaseQueryError(err)) {
+          const errMsg = "error" in err ? err.error : JSON.stringify(err.data)
+          toast.error(errMsg)
+        } else if (isErrorWithMessage(err)) {
+          toast.error(err.message)
+        }
+      }
+    })
+  }
+
+  async function onApproveTest() {
+    await payOrder({ orderId, details: { payer: {} } })
+    refetch()
+    toast.success("Order is paid")
+  }
+
+  function onError(err: any) {
+    toast.error(err.message)
+  }
+
+  function createOrder(_data: any, actions: any) {
+    return actions.order
+      .create({
+        purchase_units: [
+          {
+            amount: { value: order.totalPrice },
+          },
+        ],
+      })
+      .then((orderID: any) => {
+        return orderID
+      })
+  }
 
   if (isLoading) {
     return <Spinner />
@@ -139,6 +225,26 @@ const OrderScreen = () => {
                     <Col>${order.totalPrice}</Col>
                   </Row>
                 </ListGroup.Item>
+                {!order.isPaid && (
+                  <ListGroup.Item>
+                    <div>
+                      <Button
+                        style={{ marginBottom: "10px" }}
+                        onClick={onApproveTest}
+                      >
+                        Test Pay Order
+                      </Button>
+
+                      <div>
+                        <PayPalButtons
+                          createOrder={createOrder}
+                          onApprove={onApprove}
+                          onError={onError}
+                        ></PayPalButtons>
+                      </div>
+                    </div>
+                  </ListGroup.Item>
+                )}
               </ListGroup>
             </Card>
           </Col>
