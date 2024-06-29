@@ -31,7 +31,7 @@ export interface CartType {
 }
 
 export interface UserType {
-  _id: string
+  _id?: string
   name: string
   email: string
   isAdmin: boolean

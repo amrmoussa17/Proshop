@@ -1,3 +1,4 @@
+import { profile } from "console"
 import { USERS_URL } from "../helpers/constants"
 import { UserType } from "../helpers/types"
 import { apiSlice } from "./apiSlice"
@@ -34,8 +35,19 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         body,
       }),
     }),
+    profile: builder.mutation({
+      query: (body) => ({
+        url: `${USERS_URL}/profile`,
+        method: "PUT",
+        body: body,
+      }),
+    }),
   }),
 })
 
-export const { useLoginMutation, useLogoutMutation, useRegisterMutation } =
-  usersApiSlice
+export const {
+  useLoginMutation,
+  useLogoutMutation,
+  useRegisterMutation,
+  useProfileMutation,
+} = usersApiSlice
