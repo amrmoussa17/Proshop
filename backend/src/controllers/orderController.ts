@@ -63,7 +63,8 @@ export const getMyOrders = asyncHandler(async (req, res) => {
  @@ Access Admin
  */
 export const getAllOrders = asyncHandler(async (req, res) => {
-  res.send("get all orders")
+  const orders = await Order.find({}).populate("user", "_id name")
+  res.json(orders)
 })
 
 /*

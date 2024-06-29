@@ -28,8 +28,7 @@ const ProfileScreen = () => {
     }
   }, [userInfo])
 
-  const [updateProfile, { isLoading: loadingUpdateProfile }] =
-    useProfileMutation()
+  const [updateProfile] = useProfileMutation()
   const { data: orders, isLoading, error } = useGetMyOrdersQuery()
 
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
