@@ -3,6 +3,7 @@ import {
   useGetOrderDetailsQuery,
   usePayOrderMutation,
   useGetPaypalClientIdQuery,
+  useDeliverOrderMutation,
 } from "../slices/ordersApiSlice"
 import {
   Row,
@@ -22,6 +23,7 @@ import {
   isFetchBaseQueryError,
   isErrorWithMessage,
 } from "../helpers/RTKQueryError"
+import { useAppSelector } from "../hooks"
 
 const OrderScreen = () => {
   const { id: orderId } = useParams()
@@ -41,6 +43,11 @@ const OrderScreen = () => {
     isLoading: loadingPayPal,
     error: errorPayPal,
   } = useGetPaypalClientIdQuery()
+
+  const [deliverOrder, { isLoading: loadingDeliver }] =
+    useDeliverOrderMutation()
+
+  const { userInfo } = useAppSelector((state) => state.auth)
 
   useEffect(() => {
     if (!errorPayPal && !loadingPayPal && paypal?.clientId) {
@@ -100,6 +107,10 @@ const OrderScreen = () => {
       .then((orderID: any) => {
         return orderID
       })
+  }
+  async function deliverHandler() {
+    await deliverOrder(orderId)
+    refetch()
   }
 
   if (isLoading) {
@@ -245,6 +256,20 @@ const OrderScreen = () => {
                     </div>
                   </ListGroup.Item>
                 )}
+                {userInfo &&
+                  userInfo.isAdmin &&
+                  order.isPaid &&
+                  !order.isDelivered && (
+                    <ListGroup.Item>
+                      <Button
+                        type="button"
+                        className="btn btn-block"
+                        onClick={deliverHandler}
+                      >
+                        Mark As Delivered
+                      </Button>
+                    </ListGroup.Item>
+                  )}
               </ListGroup>
             </Card>
           </Col>
