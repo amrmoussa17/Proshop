@@ -4,7 +4,15 @@ import { CartItemType, CartType, ShippingAddress } from "../helpers/types"
 
 const initialState: CartType = localStorage.getItem("cart")
   ? JSON.parse(localStorage.getItem("cart")!)
-  : { cartItems: [], shippingAddress: {}, paymentMethod: "PayPal" }
+  : {
+      cartItems: [],
+      shippingAddress: {},
+      paymentMethod: "PayPal",
+      itemsPrice: 0,
+      shippingPrice: 0,
+      taxPrice: 0,
+      itemsQty: 0,
+    }
 
 export const cartSlice = createSlice({
   name: "cart",
