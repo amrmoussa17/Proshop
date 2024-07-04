@@ -1,16 +1,43 @@
-import { useGetProductsQuery } from "../slices/productsApiSlice"
+import {
+  useCreateProductMutation,
+  useGetProductsQuery,
+} from "../slices/productsApiSlice"
 import { Alert, Button, Col, Row, Spinner, Table } from "react-bootstrap"
 import { ProductType } from "../helpers/types"
 import { LinkContainer } from "react-router-bootstrap"
 import { FaEdit, FaPlus, FaTrash } from "react-icons/fa"
+import { error } from "console"
+import {
+  isFetchBaseQueryError,
+  isErrorWithMessage,
+} from "../helpers/RTKQueryError"
+import products from "../products"
+import { toast } from "react-toastify"
 
 const ProductListScreen = () => {
   const { data: products, isLoading, error } = useGetProductsQuery()
+
+  const [createProduct] = useCreateProductMutation()
 
   const deleteHandler = () => {}
   console.log("delete product")
   if (isLoading) {
     return <Spinner />
+  }
+
+  const createProductHandler = async () => {
+    if (window.confirm("Are you sure you want to create a new product?")) {
+      try {
+        await createProduct()
+      } catch (err) {
+        if (isFetchBaseQueryError(err)) {
+          const errMsg = "error" in err ? err.error : JSON.stringify(err.data)
+          toast.error(errMsg)
+        } else if (isErrorWithMessage(err)) {
+          toast.error(err.message)
+        }
+      }
+    }
   }
 
   if (error) {
@@ -34,7 +61,7 @@ const ProductListScreen = () => {
             <h1>Products</h1>
           </Col>
           <Col className="text-end">
-            <Button className="btn-sm">
+            <Button className="btn-sm" onClick={createProductHandler}>
               <FaPlus /> create product
             </Button>
           </Col>
@@ -83,3 +110,6 @@ const ProductListScreen = () => {
 }
 
 export default ProductListScreen
+function createProduct() {
+  throw new Error("Function not implemented.")
+}
