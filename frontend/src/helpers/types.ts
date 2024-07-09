@@ -7,8 +7,8 @@ export interface ProductType {
   category: string
   price: number
   countInStock: number
-  rating: number
-  numReviews: number
+  rating?: number
+  numReviews?: number
 }
 export interface CartItemType extends ProductType {
   qty: number

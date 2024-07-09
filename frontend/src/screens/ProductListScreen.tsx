@@ -1,18 +1,16 @@
+import { Alert, Button, Col, Row, Spinner, Table } from "react-bootstrap"
+import { FaEdit, FaPlus, FaTrash } from "react-icons/fa"
+import { LinkContainer } from "react-router-bootstrap"
+import { toast } from "react-toastify"
+import {
+  isErrorWithMessage,
+  isFetchBaseQueryError,
+} from "../helpers/RTKQueryError"
+import { ProductType } from "../helpers/types"
 import {
   useCreateProductMutation,
   useGetProductsQuery,
 } from "../slices/productsApiSlice"
-import { Alert, Button, Col, Row, Spinner, Table } from "react-bootstrap"
-import { ProductType } from "../helpers/types"
-import { LinkContainer } from "react-router-bootstrap"
-import { FaEdit, FaPlus, FaTrash } from "react-icons/fa"
-import { error } from "console"
-import {
-  isFetchBaseQueryError,
-  isErrorWithMessage,
-} from "../helpers/RTKQueryError"
-import products from "../products"
-import { toast } from "react-toastify"
 
 const ProductListScreen = () => {
   const { data: products, isLoading, error } = useGetProductsQuery()
@@ -86,7 +84,7 @@ const ProductListScreen = () => {
                 <td>${product.category}</td>
                 <td>${product.brand}</td>
                 <td>
-                  <LinkContainer to={`/product/${product._id}`}>
+                  <LinkContainer to={`/admin/product/${product._id}/edit`}>
                     <Button variant="light" className="btn-sm mx-2">
                       <FaEdit />
                     </Button>
@@ -110,6 +108,3 @@ const ProductListScreen = () => {
 }
 
 export default ProductListScreen
-function createProduct() {
-  throw new Error("Function not implemented.")
-}
