@@ -10,19 +10,32 @@ import { ProductType } from "../helpers/types"
 import {
   useCreateProductMutation,
   useGetProductsQuery,
+  useDeleteProductMutation,
 } from "../slices/productsApiSlice"
 
 const ProductListScreen = () => {
   const { data: products, isLoading, error } = useGetProductsQuery()
 
-  const [createProduct] = useCreateProductMutation()
+  const [createProduct, { isLoading: loadingCreate }] =
+    useCreateProductMutation()
 
-  const deleteHandler = () => {}
-  console.log("delete product")
-  if (isLoading) {
-    return <Spinner />
+  const [deleteProduct, { isLoading: loadingDelete }] =
+    useDeleteProductMutation()
+
+  const deleteHandler = async (id: string) => {
+    if (window.confirm("Are you sure")) {
+      try {
+        await deleteProduct(id)
+      } catch (err) {
+        if (isFetchBaseQueryError(err)) {
+          const errMsg = "error" in err ? err.error : JSON.stringify(err.data)
+          toast.error(errMsg)
+        } else if (isErrorWithMessage(err)) {
+          toast.error(err.message)
+        }
+      }
+    }
   }
-
   const createProductHandler = async () => {
     if (window.confirm("Are you sure you want to create a new product?")) {
       try {
@@ -36,6 +49,9 @@ const ProductListScreen = () => {
         }
       }
     }
+  }
+  if (isLoading) {
+    return <Spinner />
   }
 
   if (error) {
@@ -64,6 +80,8 @@ const ProductListScreen = () => {
             </Button>
           </Col>
         </Row>
+        {loadingCreate && <Spinner />}
+        {loadingDelete && <Spinner />}
         <Table striped bordered hover responsive className="table-sm">
           <thead>
             <tr>
@@ -92,7 +110,7 @@ const ProductListScreen = () => {
                   <Button
                     variant="danger"
                     className="btn-sm"
-                    onClick={deleteHandler}
+                    onClick={() => deleteHandler(product._id)}
                   >
                     <FaTrash style={{ color: "white" }} />
                   </Button>
