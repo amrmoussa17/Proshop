@@ -1,3 +1,4 @@
+import path from "path"
 import express from "express"
 import dotenv from "dotenv"
 import connectDb from "./config/db"
@@ -17,6 +18,10 @@ app.use("/api", router)
 app.get("/api/config/paypal", (req, res) =>
   res.send({ clientId: process.env.PAYPAL_CLIENT_ID })
 )
+
+const __dirname = path.resolve()
+app.use("/uploads", express.static(path.join(__dirname, "/uploads")))
+
 app.use(notFound)
 app.use(errorHandler)
 
