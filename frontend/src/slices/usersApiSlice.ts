@@ -1,4 +1,3 @@
-import { profile } from "console"
 import { USERS_URL } from "../helpers/constants"
 import { UserType } from "../helpers/types"
 import { apiSlice } from "./apiSlice"
@@ -42,6 +41,17 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         body: body,
       }),
     }),
+    getUsers: builder.query<UserType[], void>({
+      query: () => `${USERS_URL}`,
+      providesTags: ["User"],
+    }),
+    deleteUser: builder.mutation({
+      query: (userId) => ({
+        url: `${USERS_URL}/${userId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["User"],
+    }),
   }),
 })
 
@@ -50,4 +60,6 @@ export const {
   useLogoutMutation,
   useRegisterMutation,
   useProfileMutation,
+  useGetUsersQuery,
+  useDeleteUserMutation,
 } = usersApiSlice

@@ -5,6 +5,6 @@ export const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({ baseUrl: `${BASE_URL}` }),
   keepUnusedDataFor: 5,
-  tagTypes: ["Product"],
+  tagTypes: ["Product", "User"],
   endpoints: (builder) => ({}),
 })
