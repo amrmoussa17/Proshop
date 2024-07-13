@@ -1,3 +1,11 @@
+interface Review {
+  _id: string
+  name: string
+  user: string
+  comment: string
+  rating: number
+  createdAt: string
+}
 export interface ProductType {
   _id: string
   name: string
@@ -9,6 +17,7 @@ export interface ProductType {
   countInStock: number
   rating?: number
   numReviews?: number
+  reviews?: Review[]
 }
 export interface CartItemType extends ProductType {
   qty: number

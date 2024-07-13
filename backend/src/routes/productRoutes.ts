@@ -5,6 +5,7 @@ import {
   getProducts,
   updateProduct,
   deleteProduct,
+  createProductReview,
 } from "../controllers/productController"
 import { protect, admin } from "../middleware/auth"
 
@@ -16,5 +17,6 @@ router
   .get(getProduct)
   .put(protect, admin, updateProduct)
   .delete(protect, admin, deleteProduct)
+router.route("/:id/reviews").post(protect, createProductReview)
 
 export default router
