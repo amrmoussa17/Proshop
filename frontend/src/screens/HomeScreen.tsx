@@ -1,9 +1,15 @@
 import { Row, Col, Spinner, Alert } from "react-bootstrap"
 import Product from "../components/Product"
 import { useGetProductsQuery } from "../slices/productsApiSlice"
+import { ProductType } from "../helpers/types"
+import { useLocation } from "react-router-dom"
+import Paginate from "../components/paginate"
 
 const HomeScreen = () => {
-  const { data: products, error, isLoading } = useGetProductsQuery()
+  const { search } = useLocation()
+  const searchParams = new URLSearchParams(search)
+  const pageNumber = Number(searchParams.get("page"))
+  const { data, error, isLoading } = useGetProductsQuery(pageNumber)
 
   if (isLoading) {
     return <Spinner animation="border" />
@@ -23,12 +29,12 @@ const HomeScreen = () => {
     return <div>{error.message}</div>
   }
 
-  if (products) {
+  if (data!.products) {
     return (
       <>
         <h1>Latest Products</h1>
         <Row>
-          {products.map((product) => (
+          {data.products.map((product: ProductType) => (
             <Col
               sm={12}
               md={6}
@@ -41,6 +47,7 @@ const HomeScreen = () => {
             </Col>
           ))}
         </Row>
+        <Paginate page={data.page} pages={data.pages} isAdmin={false} />
       </>
     )
   }

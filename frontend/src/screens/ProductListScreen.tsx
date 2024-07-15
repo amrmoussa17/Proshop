@@ -12,9 +12,14 @@ import {
   useGetProductsQuery,
   useDeleteProductMutation,
 } from "../slices/productsApiSlice"
+import { useLocation } from "react-router-dom"
+import Paginate from "../components/paginate"
 
 const ProductListScreen = () => {
-  const { data: products, isLoading, error } = useGetProductsQuery()
+  const { search } = useLocation()
+  const searchParams = new URLSearchParams(search)
+  const pageNumber = Number(searchParams.get("page"))
+  const { data, error, isLoading } = useGetProductsQuery(pageNumber)
 
   const [createProduct, { isLoading: loadingCreate }] =
     useCreateProductMutation()
@@ -67,7 +72,7 @@ const ProductListScreen = () => {
     return <Alert variant="danger">{error.message}</Alert>
   }
 
-  if (products) {
+  if (data.products) {
     return (
       <>
         <Row className="align-items-center">
@@ -94,7 +99,7 @@ const ProductListScreen = () => {
             </tr>
           </thead>
           <tbody>
-            {products.map((product: ProductType) => (
+            {data.products.map((product: ProductType) => (
               <tr key={product._id}>
                 <td>{product._id}</td>
                 <td>{product.name}</td>
@@ -119,6 +124,7 @@ const ProductListScreen = () => {
             ))}
           </tbody>
         </Table>
+        <Paginate page={data.page} pages={data.pages} isAdmin={true} />
       </>
     )
   }

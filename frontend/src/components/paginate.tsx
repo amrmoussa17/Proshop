@@ -1,0 +1,36 @@
+import { Pagination } from "react-bootstrap"
+import { LinkContainer } from "react-router-bootstrap"
+
+interface Props {
+  page: number
+  pages: number
+  isAdmin: boolean
+}
+const paginate = ({ page, pages, isAdmin }: Props) => {
+  if (pages > 1)
+    return (
+      <Pagination>
+        {[...Array(pages).keys()].map((x) => (
+          <LinkContainer
+            key={x + 1}
+            to={
+              !isAdmin
+                ? {
+                    pathname: "/",
+                    search: `page=${x + 1}`,
+                  }
+                : {
+                    pathname: "/admin/productlist",
+                    search: `page=${x + 1}`,
+                  }
+            }
+          >
+            <Pagination.Item active={x + 1 === page}>{x + 1}</Pagination.Item>
+          </LinkContainer>
+        ))}
+      </Pagination>
+    )
+  return null
+}
+
+export default paginate
