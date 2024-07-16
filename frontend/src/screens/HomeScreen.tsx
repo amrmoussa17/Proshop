@@ -2,8 +2,9 @@ import { Row, Col, Spinner, Alert } from "react-bootstrap"
 import Product from "../components/Product"
 import { useGetProductsQuery } from "../slices/productsApiSlice"
 import { ProductType } from "../helpers/types"
-import { useLocation } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 import Paginate from "../components/paginate"
+import ProductCarousel from "../components/ProductCarousel"
 
 const HomeScreen = () => {
   const location = useLocation()
@@ -36,6 +37,13 @@ const HomeScreen = () => {
     return (
       <>
         <h1>Latest Products</h1>
+        {!search ? (
+          <ProductCarousel />
+        ) : (
+          <Link to="/" className="btn btn-light">
+            Go Back
+          </Link>
+        )}
         <Row>
           {data.products.map((product: ProductType) => (
             <Col
