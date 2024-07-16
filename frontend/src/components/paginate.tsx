@@ -4,9 +4,10 @@ import { LinkContainer } from "react-router-bootstrap"
 interface Props {
   page: number
   pages: number
-  isAdmin: boolean
+  isAdmin?: boolean
+  keyword?: string
 }
-const paginate = ({ page, pages, isAdmin }: Props) => {
+const paginate = ({ page, pages, isAdmin = false, keyword = "" }: Props) => {
   if (pages > 1)
     return (
       <Pagination>
@@ -17,11 +18,11 @@ const paginate = ({ page, pages, isAdmin }: Props) => {
               !isAdmin
                 ? {
                     pathname: "/",
-                    search: `page=${x + 1}`,
+                    search: `page=${x + 1}&search=${keyword}`,
                   }
                 : {
                     pathname: "/admin/productlist",
-                    search: `page=${x + 1}`,
+                    search: `page=${x + 1}&search=${keyword}`,
                   }
             }
           >

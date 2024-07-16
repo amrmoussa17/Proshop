@@ -6,10 +6,13 @@ import { useLocation } from "react-router-dom"
 import Paginate from "../components/paginate"
 
 const HomeScreen = () => {
-  const { search } = useLocation()
-  const searchParams = new URLSearchParams(search)
+  const location = useLocation()
+  const searchParams = new URLSearchParams(location.search)
+
   const pageNumber = Number(searchParams.get("page"))
-  const { data, error, isLoading } = useGetProductsQuery(pageNumber)
+  const search = searchParams.get("search") || ""
+
+  const { data, error, isLoading } = useGetProductsQuery({ pageNumber, search })
 
   if (isLoading) {
     return <Spinner animation="border" />
@@ -47,7 +50,7 @@ const HomeScreen = () => {
             </Col>
           ))}
         </Row>
-        <Paginate page={data.page} pages={data.pages} isAdmin={false} />
+        <Paginate page={data.page} pages={data.pages} keyword={search} />
       </>
     )
   }

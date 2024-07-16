@@ -7,11 +7,14 @@ import Product from "../models/productModel"
  @@ Access public 
  */
 const getProducts = asyncHandler(async (req, res) => {
-  const pageSize = 4
+  const keyword = req.query.search
+    ? { name: { $regex: req.query.search, $options: "i" } }
+    : {}
+  const pageSize = 8
   const page = Number(req.query.pageNumber) || 1
-  const count = await Product.countDocuments()
+  const count = await Product.countDocuments({ ...keyword })
   const pages = Math.ceil(count / pageSize)
-  const products = await Product.find()
+  const products = await Product.find({ ...keyword })
     .limit(pageSize)
     .skip(pageSize * (page - 1))
   res.json({ products, page, pages })

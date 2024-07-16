@@ -16,10 +16,13 @@ import { useLocation } from "react-router-dom"
 import Paginate from "../components/paginate"
 
 const ProductListScreen = () => {
-  const { search } = useLocation()
-  const searchParams = new URLSearchParams(search)
-  const pageNumber = Number(searchParams.get("page"))
-  const { data, error, isLoading } = useGetProductsQuery(pageNumber)
+  const location = useLocation()
+  const searchParams = new URLSearchParams(location.search)
+
+  const pageNumber = Number(searchParams.get("page")) || 1
+  const search = searchParams.get("search") || ""
+
+  const { data, error, isLoading } = useGetProductsQuery({ pageNumber, search })
 
   const [createProduct, { isLoading: loadingCreate }] =
     useCreateProductMutation()
@@ -124,7 +127,12 @@ const ProductListScreen = () => {
             ))}
           </tbody>
         </Table>
-        <Paginate page={data.page} pages={data.pages} isAdmin={true} />
+        <Paginate
+          page={data.page}
+          pages={data.pages}
+          isAdmin={true}
+          keyword={search}
+        />
       </>
     )
   }
