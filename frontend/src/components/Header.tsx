@@ -12,6 +12,7 @@ import { toast } from "react-toastify"
 import { logout } from "../slices/authSlice"
 import { useNavigate } from "react-router-dom"
 import SearchBox from "./SearchBox"
+import { resetCart } from "../slices/cartSlice"
 
 const Header = () => {
   const { itemsQty } = useAppSelector((state) => state.cart)
@@ -26,6 +27,7 @@ const Header = () => {
     try {
       await logoutApiCall().unwrap()
       dispatch(logout())
+      dispatch(resetCart())
       navigate("/login")
     } catch (err) {
       if (isFetchBaseQueryError(err)) {
@@ -95,5 +97,4 @@ const Header = () => {
     </Navbar>
   )
 }
-
 export default Header

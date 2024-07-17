@@ -6,7 +6,7 @@
   "scripts": {
     "clean": "rimraf backend/build",
     "build": "npm run clean && npx tsc",
-    "start": "node backend/build/src/server.js",
+    "start": "node backend/build/server.js",
     "server": "nodemon backend/src/server.ts",
     "client": "npm start --prefix frontend",
     "dev": "concurrently \"npm run server \" \"npm run client \"",

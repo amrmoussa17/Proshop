@@ -23,8 +23,7 @@ export const authSlice = createSlice({
     },
     logout: (state) => {
       state.userInfo = null
-      localStorage.removeItem("userInfo")
-      localStorage.removeItem("expirationTime")
+      localStorage.clear()
     },
   },
 })
