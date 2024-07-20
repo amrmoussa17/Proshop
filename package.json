@@ -5,7 +5,7 @@
   "main": "server.ts",
   "scripts": {
     "clean": "rimraf backend/build && rimraf frontend/build ",
-    "build": "npm install && npm install --prefix frontend && npm npx tsc && npm run build --prefix frontend",
+    "build": "npm install && npm install --prefix frontend && npx tsc && npm run build --prefix frontend",
     "start": "node backend/build/server.js",
     "server": "nodemon backend/src/server.ts",
     "client": "npm start --prefix frontend",
