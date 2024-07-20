@@ -99,9 +99,9 @@ Sample User Logins
 admin@email.com (Admin)
 123456
 
-john@email.com (Customer)
+amr@email.com (Customer)
 123456
 
-jane@email.com (Customer)
+mamdouh@email.com (Customer)
 123456
 ```
